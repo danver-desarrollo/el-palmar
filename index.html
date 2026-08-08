@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>El Palmar · Confirmá tu reserva</title>
 <meta name="description" content="Confirmá tu reserva en El Palmar — Fútbol 5 & Pádel.">
-<!-- Open Graph: para que WhatsApp muestre una tarjeta de preview linda -->
 <meta property="og:title" content="El Palmar · Confirmá tu reserva">
 <meta property="og:description" content="Tocá para ver y confirmar tu reserva de cancha.">
 <meta property="og:type" content="website">
@@ -14,7 +13,7 @@
     --verde:#0e2924; --verde-2:#091d19; --verde-3:#12352b;
     --dorado:#c89333; --dorado-2:#d8ab4e; --dorado-3:#f0c05a;
     --crema:#f0ead6; --crema-2:#fbf7ee; --papel:#ffffff;
-    --sage:#9fb8ab; --verde-ok:#2f8f4e; --rojo:#b23b3b; --azul:#3a6ea5;
+    --sage:#9fb8ab; --verde-ok:#2f8f4e; --rojo:#b23b3b;
     --serif:Georgia,"Times New Roman",Cambria,serif;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     --sombra:0 18px 50px rgba(0,0,0,.35);
@@ -22,119 +21,55 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
-    font-family:var(--sans);
-    color:var(--verde);
-    background:
-      radial-gradient(900px 500px at 50% -6%, rgba(23,66,53,.65) 0%, transparent 62%),
+    font-family:var(--sans);color:var(--verde);
+    background:radial-gradient(900px 500px at 50% -6%, rgba(23,66,53,.65) 0%, transparent 62%),
       linear-gradient(160deg,var(--verde) 0%,var(--verde-2) 100%);
-    min-height:100%;
-    display:flex;align-items:center;justify-content:center;
-    padding:24px 16px;
-    -webkit-font-smoothing:antialiased;
+    min-height:100%;display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;-webkit-font-smoothing:antialiased;
   }
-
-  .card{
-    position:relative;z-index:1;width:100%;max-width:440px;
-    background:var(--crema-2);
-    border-radius:22px;overflow:hidden;box-shadow:var(--sombra);
-    border:1px solid rgba(200,147,51,.25);
-  }
-
-  /* Header con marca */
-  .head{
-    position:relative;
-    background:radial-gradient(600px 220px at 50% -40%, rgba(22,65,53,.6) 0%, transparent 70%), var(--verde);
-    padding:26px 24px 24px;text-align:center;
-    border-bottom:3px solid var(--dorado);
-  }
+  .card{position:relative;z-index:1;width:100%;max-width:440px;background:var(--crema-2);
+    border-radius:22px;overflow:hidden;box-shadow:var(--sombra);border:1px solid rgba(200,147,51,.25)}
+  .head{position:relative;background:radial-gradient(600px 220px at 50% -40%, rgba(22,65,53,.6) 0%, transparent 70%), var(--verde);
+    padding:26px 24px 24px;text-align:center;border-bottom:3px solid var(--dorado)}
   .emblem{width:34px;height:44px;margin:0 auto 12px;display:block}
-  .wordmark{
-    color:var(--crema);font-family:var(--serif);font-weight:700;
-    font-size:26px;letter-spacing:7px;line-height:1;
-    padding-left:7px; /* compensa el letter-spacing del último char */
-  }
-  .tagline{
-    color:var(--dorado-2);font-family:var(--serif);font-size:11px;
-    letter-spacing:5px;font-weight:700;margin-top:9px;text-transform:uppercase;
-    padding-left:5px;
-  }
-
-  /* Cuerpo */
+  .wordmark{color:var(--crema);font-family:var(--serif);font-weight:700;font-size:26px;letter-spacing:7px;line-height:1;padding-left:7px}
+  .tagline{color:var(--dorado-2);font-family:var(--serif);font-size:11px;letter-spacing:5px;font-weight:700;margin-top:9px;text-transform:uppercase;padding-left:5px}
   .body{padding:26px 24px 12px}
-  .eyebrow{
-    text-align:center;color:var(--dorado);font-family:var(--serif);
-    font-size:12px;font-weight:700;letter-spacing:5px;text-transform:uppercase;margin-bottom:8px;
-    padding-left:5px;
-  }
-  h1{
-    text-align:center;font-family:var(--serif);font-size:27px;font-weight:700;
-    color:var(--verde);line-height:1.15;margin-bottom:6px;letter-spacing:.3px;
-  }
+  .eyebrow{text-align:center;color:var(--dorado);font-family:var(--serif);font-size:12px;font-weight:700;letter-spacing:5px;text-transform:uppercase;margin-bottom:8px;padding-left:5px}
+  h1{text-align:center;font-family:var(--serif);font-size:27px;font-weight:700;color:var(--verde);line-height:1.15;margin-bottom:6px;letter-spacing:.3px}
   .sub{text-align:center;color:#5c6b64;font-size:14px;margin-bottom:22px;line-height:1.5}
-  .sub b{color:var(--verde)}
-
-  /* Detalle de la reserva */
-  .detail{
-    background:var(--papel);border:1px solid #e6dfca;border-radius:16px;
-    padding:6px 18px;margin-bottom:20px;
-  }
-  .row{
-    display:flex;align-items:center;gap:14px;
-    padding:14px 0;border-bottom:1px solid #efe9d8;
-  }
+  .detail{background:var(--papel);border:1px solid #e6dfca;border-radius:16px;padding:6px 18px;margin-bottom:20px}
+  .row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #efe9d8}
   .row:last-child{border-bottom:none}
-  .row .ic{width:34px;height:34px;flex:none;color:var(--dorado);
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(200,147,51,.12);border-radius:9px}
+  .row .ic{width:34px;height:34px;flex:none;color:var(--dorado);display:flex;align-items:center;justify-content:center;background:rgba(200,147,51,.12);border-radius:9px}
   .row .ic svg{width:19px;height:19px}
   .row .txt{flex:1;min-width:0}
   .row .k{font-family:var(--serif);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#96a19b;font-weight:700}
-  .row .v{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--verde);margin-top:2px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-  /* Franja de pago */
-  .pay{
-    display:flex;justify-content:space-between;gap:10px;
-    background:var(--verde-3);border-radius:12px;padding:13px 16px;margin-bottom:22px;
-  }
-  .pay div{flex:1;text-align:center}
-  .pay .k{font-family:var(--serif);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--sage);font-weight:700}
-  .pay .v{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--crema);margin-top:3px}
-  .pay .sep{flex:none;width:1px;background:rgba(255,255,255,.12)}
-
-  /* Botón */
-  .cta{
-    display:block;width:100%;text-align:center;text-decoration:none;cursor:pointer;
-    background:linear-gradient(180deg,var(--dorado-2),var(--dorado));
-    color:var(--verde);font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:2px;
-    text-transform:uppercase;padding:17px 20px;border-radius:14px;border:none;
-    box-shadow:0 8px 22px rgba(200,147,51,.4);
-    transition:transform .08s ease, box-shadow .2s ease;
-  }
+  .row .v{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--verde);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cta{display:block;width:100%;text-align:center;text-decoration:none;cursor:pointer;
+    background:linear-gradient(180deg,var(--dorado-2),var(--dorado));color:var(--verde);
+    font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+    padding:17px 20px;border-radius:14px;border:none;box-shadow:0 8px 22px rgba(200,147,51,.4);
+    transition:transform .08s ease, box-shadow .2s ease, opacity .2s ease}
   .cta:active{transform:translateY(1px);box-shadow:0 4px 14px rgba(200,147,51,.35)}
+  .cta.busy{opacity:.6;pointer-events:none}
   .note{text-align:center;color:#8a9691;font-size:12.5px;line-height:1.5;margin:14px 6px 4px}
-
-  /* Estado confirmado */
-  .ok-badge{width:76px;height:76px;margin:6px auto 16px;border-radius:50%;
-    background:rgba(47,143,78,.14);display:flex;align-items:center;justify-content:center}
+  .ok-badge{width:76px;height:76px;margin:6px auto 16px;border-radius:50%;background:rgba(47,143,78,.14);display:flex;align-items:center;justify-content:center}
   .ok-badge svg{width:40px;height:40px;color:var(--verde-ok)}
   .estado-ok h1{color:var(--verde-ok)}
-
-  /* Footer */
+  .spinner{width:44px;height:44px;margin:30px auto;border:4px solid rgba(200,147,51,.25);border-top-color:var(--dorado);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
   .foot{text-align:center;padding:16px 24px 22px;border-top:1px solid #ece5d2;margin-top:6px}
   .foot .place{color:var(--verde);font-family:var(--serif);font-weight:700;font-size:14px;letter-spacing:3px}
   .foot .place span{color:var(--dorado)}
   .foot .by{color:#a9b1ac;font-size:10.5px;letter-spacing:1px;margin-top:6px;text-transform:uppercase}
-
   .hidden{display:none !important}
   @media (max-width:380px){ h1{font-size:23px} .wordmark{font-size:23px;letter-spacing:5px} }
 </style>
 </head>
 <body>
-
 <main class="card">
   <div class="head">
-    <!-- Emblema El Palmar: banderitas doradas en diagonal -->
     <svg class="emblem" viewBox="0 0 48 56" aria-label="El Palmar">
       <path d="M15 4 L31 4 L23 52 L7 52 Z" fill="#c89333"/>
       <path d="M35 4 L43 4 L35 52 L27 52 Z" fill="#d8ab4e" opacity="0.5"/>
@@ -143,38 +78,24 @@
     <div class="tagline">Fútbol 5 &nbsp;·&nbsp; Pádel</div>
   </div>
 
-  <!-- ===== VISTA: CONFIRMAR ===== -->
-  <div id="vista-confirmar" class="body">
+  <!-- CARGANDO -->
+  <div id="vista-load" class="body"><div class="spinner"></div><p class="sub">Buscando tu reserva…</p></div>
+
+  <!-- CONFIRMAR -->
+  <div id="vista-confirmar" class="body hidden">
     <div class="eyebrow">Tu reserva</div>
     <h1 id="saludo">Confirmá tu turno</h1>
     <p class="sub">Revisá los datos y tocá el botón para confirmar tu lugar.</p>
-
     <div class="detail">
-      <div class="row">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
-        <div class="txt"><div class="k">Cancha</div><div class="v" id="v-cancha">—</div></div>
-      </div>
-      <div class="row">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
-        <div class="txt"><div class="k">Fecha</div><div class="v" id="v-fecha">—</div></div>
-      </div>
-      <div class="row">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-        <div class="txt"><div class="k">Horario</div><div class="v" id="v-hora">—</div></div>
-      </div>
+      <div class="row"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><div class="txt"><div class="k">Cancha</div><div class="v" id="v-cancha">—</div></div></div>
+      <div class="row"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><div class="txt"><div class="k">Fecha</div><div class="v" id="v-fecha">—</div></div></div>
+      <div class="row"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="txt"><div class="k">Horario</div><div class="v" id="v-hora">—</div></div></div>
     </div>
-
-    <div class="pay hidden" id="pay">
-      <div><div class="k">Seña</div><div class="v" id="v-sena">—</div></div>
-      <div class="sep"></div>
-      <div><div class="k">Saldo</div><div class="v" id="v-saldo">—</div></div>
-    </div>
-
-    <a id="btn-confirmar" class="cta" href="#">Confirmar reserva</a>
+    <a id="btn-confirmar" class="cta" href="javascript:void(0)">Confirmar reserva</a>
     <p class="note">Al confirmar, avisás al complejo que vas a asistir. Si no podés venir, comunicate para liberar el turno.</p>
   </div>
 
-  <!-- ===== VISTA: CONFIRMADA ===== -->
+  <!-- CONFIRMADA -->
   <div id="vista-ok" class="body estado-ok hidden">
     <div class="ok-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
     <h1>¡Reserva confirmada!</h1>
@@ -186,11 +107,11 @@
     </div>
   </div>
 
-  <!-- ===== VISTA: LINK INVÁLIDO ===== -->
+  <!-- ERROR -->
   <div id="vista-error" class="body hidden">
     <div class="eyebrow" style="color:var(--rojo)">Enlace no válido</div>
-    <h1>No pudimos leer tu reserva</h1>
-    <p class="sub">Es posible que el enlace esté incompleto. Por favor, comunicate con el complejo para confirmar tu turno.</p>
+    <h1 id="err-title">No pudimos leer tu reserva</h1>
+    <p class="sub" id="err-sub">Es posible que el enlace esté incompleto o haya vencido. Comunicate con el complejo para confirmar tu turno.</p>
   </div>
 
   <div class="foot">
@@ -201,7 +122,6 @@
 
 <script>
   // ======= CONFIG =======
-  // Pegá acá la URL /exec de tu Web App de GAS (después del deploy):
   var GAS_URL = "https://script.google.com/macros/s/AKfycbxYasftkvwQtwH1yp965tXuPn2TRlWg3EMJQ5HCggfAC0pukp_LdLSpbHTQp6lECN8w1Q/exec";
   // ======================
 
@@ -210,43 +130,64 @@
     return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : "";
   }
   function show(id){
-    ["vista-confirmar","vista-ok","vista-error"].forEach(function(v){
+    ["vista-load","vista-confirmar","vista-ok","vista-error"].forEach(function(v){
       document.getElementById(v).classList.toggle("hidden", v !== id);
     });
   }
-
-  var token  = qp("t");
-  var nombre = qp("n");
-  var cancha = qp("ca");
-  var fecha  = qp("f");
-  var hora   = qp("h");
-  var sena   = qp("s");
-  var saldo  = qp("sa");
-  var estado = qp("estado"); // "ok" cuando GAS redirige de vuelta
-
-  if (estado === "ok") {
-    document.getElementById("ok-cancha").textContent = cancha || "—";
-    document.getElementById("ok-fecha").textContent  = fecha  || "—";
-    document.getElementById("ok-hora").textContent   = hora   || "—";
-    if (nombre) document.getElementById("ok-sub").textContent =
-      "Gracias " + nombre + ", te esperamos en El Palmar.";
-    show("vista-ok");
-  } else if (!token) {
+  function errorView(title, sub){
+    if (title) document.getElementById("err-title").textContent = title;
+    if (sub)   document.getElementById("err-sub").textContent = sub;
     show("vista-error");
-  } else {
-    if (nombre) document.getElementById("saludo").textContent = "Hola, " + nombre;
-    document.getElementById("v-cancha").textContent = cancha || "—";
-    document.getElementById("v-fecha").textContent  = fecha  || "—";
-    document.getElementById("v-hora").textContent   = hora   || "—";
-    if (sena || saldo) {
-      document.getElementById("pay").classList.remove("hidden");
-      document.getElementById("v-sena").textContent  = sena  || "$0";
-      document.getElementById("v-saldo").textContent = saldo || "$0";
-    }
-    document.getElementById("btn-confirmar").setAttribute(
-      "href", GAS_URL + "?action=confirmar&t=" + encodeURIComponent(token)
-    );
+  }
+  // Llamada JSONP al script (sin CORS, sin salir de la página)
+  function jsonp(params, cb){
+    var name = "cbjp_" + Math.floor(Math.random()*1e9);
+    var s = document.createElement("script");
+    var done = false;
+    var timer = setTimeout(function(){ if(!done){ done=true; cleanup(); cb(null); } }, 12000);
+    function cleanup(){ clearTimeout(timer); try{ delete window[name]; }catch(e){ window[name]=undefined; } if(s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function(res){ if(done) return; done=true; cleanup(); cb(res); };
+    s.onerror = function(){ if(done) return; done=true; cleanup(); cb(null); };
+    s.src = GAS_URL + "?" + params + "&callback=" + name;
+    document.body.appendChild(s);
+  }
+
+  var token = qp("t");
+
+  function pintarConfirmar(d){
+    if (d.cliente) document.getElementById("saludo").textContent = "Hola, " + d.cliente;
+    document.getElementById("v-cancha").textContent = d.cancha || "—";
+    document.getElementById("v-fecha").textContent  = d.fecha  || "—";
+    document.getElementById("v-hora").textContent   = d.hora   || "—";
     show("vista-confirmar");
+  }
+  function pintarOk(d){
+    document.getElementById("ok-cancha").textContent = d.cancha || "—";
+    document.getElementById("ok-fecha").textContent  = d.fecha  || "—";
+    document.getElementById("ok-hora").textContent   = d.hora   || "—";
+    if (d.cliente) document.getElementById("ok-sub").textContent =
+      "Gracias " + d.cliente + ", te esperamos en El Palmar.";
+    show("vista-ok");
+  }
+
+  if (!token){
+    errorView(null, null);
+  } else {
+    jsonp("action=info&t=" + encodeURIComponent(token), function(d){
+      if (!d || !d.ok){ errorView("No encontramos tu reserva", "Es posible que el enlace haya vencido. Comunicate con el complejo."); return; }
+      if (d.cancelado){ errorView("Reserva cancelada", "Esta reserva figura como cancelada. Comunicate con el complejo."); return; }
+      if (d.confirmado){ pintarOk(d); return; }   // ya estaba confirmada
+      pintarConfirmar(d);
+      document.getElementById("btn-confirmar").addEventListener("click", function(){
+        var btn = this;
+        btn.classList.add("busy"); btn.textContent = "Confirmando…";
+        jsonp("action=confirmar&t=" + encodeURIComponent(token), function(r){
+          if (r && r.ok){ pintarOk(r); }
+          else { btn.classList.remove("busy"); btn.textContent = "Confirmar reserva";
+                 errorView("No pudimos confirmar", "Reintentá en un momento o comunicate con el complejo."); }
+        });
+      });
+    });
   }
 </script>
 </body>
