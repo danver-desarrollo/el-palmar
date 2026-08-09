@@ -82,6 +82,8 @@ td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 tr:last-child td{border-bottom:none}
 .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
 .pill.in{background:#e7f4ea;color:#256b3c} .pill.out{background:#f7e7e7;color:#a53535}
+.est{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.est.res{background:#eef1ee;color:#5a6b63} .est.sena{background:#fbf1dc;color:#8a5b13} .est.pag{background:#e7f4ea;color:#256b3c} .est.can{background:#f7e7e7;color:#a53535;text-decoration:line-through}
 .stock-bad{background:#fbeaea} .stock-bad td:first-child{border-left:3px solid var(--rojo)}
 .tag{font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px}
 .tag.r{background:#fbeaea;color:var(--rojo)} .tag.o{background:#eaf5ec;color:var(--ok)}
@@ -136,6 +138,7 @@ tr:last-child td{border-bottom:none}
   <div class="grp"><label>Cancha</label><select id="fCancha" onchange="render()"><option value="">Todas</option></select></div>
   <div class="grp"><label>Rubro buffet</label><select id="fRubro" onchange="render()"><option value="">Todos</option></select></div>
   <div class="grp"><label>Medio de pago</label><select id="fMedio" onchange="render()"><option value="">Todos</option></select></div>
+  <div class="grp"><label>Estado reserva</label><select id="fEstado" onchange="render()"><option value="">Todos</option><option>RESERVADO</option><option>CON SEÑA</option><option>PAGADO</option><option>CANCELADO</option></select></div>
  </div>
 
  <div class="kpis" id="kpis"></div>
@@ -156,6 +159,8 @@ tr:last-child td{border-bottom:none}
   <div class="card"><h3><span class="e">🏆</span> Top productos vendidos</h3><div class="cv sm"><canvas id="c_top"></canvas></div></div>
   <div class="card"><h3><span class="e">💰</span> Margen por producto (venta − costo)</h3><div class="cv sm"><canvas id="c_margen"></canvas></div></div>
  </div>
+
+ <div class="card full" style="margin-top:16px"><h3><span class="e">📋</span> Reservas del período</h3><div id="t_reservas" style="max-height:440px;overflow:auto"></div></div>
 
  <div class="grid3" style="margin-top:16px">
   <div class="card"><h3><span class="e">🏆</span> Más vendidos del buffet</h3><div id="t_top"></div></div>
@@ -221,9 +226,9 @@ const esEfe=m=>m==="EFECTIVO";
 /* ---- RENDER ---- */
 function render(){
  if(!DATA)return;
- const [A,B]=rango(); const fc=$("fCancha").value, fr=$("fRubro").value, fm=$("fMedio").value;
+ const [A,B]=rango(); const fc=$("fCancha").value, fr=$("fRubro").value, fm=$("fMedio").value, fe=$("fEstado").value;
  const mov=DATA.mov.filter(m=>inR(m.f,A,B) && (!fm||m.medio===fm) && !m.rev);
- const tur=DATA.tur.filter(t=>inR(t.f,A,B) && (!fc||t.cancha===fc));
+ const tur=DATA.tur.filter(t=>inR(t.f,A,B) && (!fc||t.cancha===fc) && (!fe||t.estado===fe));
  const vd =DATA.vd.filter(v=>inR(v.f,A,B) && (!fr||v.rubro===fr) && (!fm||v.medio===fm));
 
  const ent=mov.filter(m=>m.tipo==="ENTRADA"), sal=mov.filter(m=>m.tipo==="SALIDA");
@@ -269,6 +274,7 @@ function render(){
  tablaTop(top);
  tablaStock(fr);
  tablaMov(mov);
+ tablaReservas(tur);
 
  /* Insights */
  insights(ent,sal,resAct,tur,vd,tIn,tOut,movNeto);
@@ -317,6 +323,14 @@ function tablaStock(fr){
  h+='</table>';
  if(bajos.length) h='<div style="font-size:12px;color:#b23b3b;font-weight:700;margin-bottom:8px">⚠️ '+bajos.length+' producto(s) por reponer</div>'+h;
  $("t_stock").innerHTML=h;
+}
+function estPill(e){var m={"RESERVADO":"res","CON SEÑA":"sena","PAGADO":"pag","CANCELADO":"can"};return '<span class="est '+(m[e]||"res")+'">'+e+'</span>';}
+function tablaReservas(tur){
+ var list=[...tur].sort(function(a,b){return a.f===b.f ? ((a.hi||"")<(b.hi||"")?-1:1) : (a.f<b.f?-1:1);});
+ if(!list.length){$("t_reservas").innerHTML='<div class="empty">Sin reservas en el período</div>';return;}
+ var h='<table><tr><th>Día</th><th>Hora</th><th>Cancha</th><th>Cliente</th><th>Estado</th><th class="r">Precio</th></tr>';
+ list.forEach(function(t){ h+='<tr><td>'+fmtDia(t.f)+'</td><td>'+(t.hi||"")+'</td><td>'+t.cancha+'</td><td>'+(t.cli||"—")+'</td><td>'+estPill(t.estado)+'</td><td class="r">'+money(t.precio)+'</td></tr>'; });
+ $("t_reservas").innerHTML='<div style="font-size:11px;color:#7c8a83;margin-bottom:8px">'+list.length+' reservas</div>'+h+'</table>';
 }
 function tablaMov(mov){
  const last=[...mov].sort((a,b)=>a.f<b.f?1:-1).slice(0,10);
