@@ -176,7 +176,7 @@ tr:last-child td{border-bottom:none}
  <div class="sec-header" style="margin-top:24px" id="sec_buffet"><h2>🧾 Buffet, Stock y Movimientos</h2></div>
  <div class="grid3" id="grid_buffet">
   <div class="card"><h3><span class="e">🏆</span> Más vendidos del buffet</h3><div id="t_top"></div></div>
-  <div class="card"><h3><span class="e">⚠️</span> Alertas de stock (≤ <span id="umbral">5</span>)</h3><div id="t_stock"></div></div>
+  <div class="card" id="stock_card"><h3><span class="e">📦</span> Control de Stock</h3><div id="t_stock"></div></div>
   <div class="card"><h3><span class="e">🧾</span> Últimos movimientos</h3><div id="t_mov"></div></div>
  </div>
 
@@ -336,7 +336,7 @@ function tablaStock(fr){
  const u=DATA.meta.umbralStock;
  const list=DATA.catalogo.filter(c=>c.activo&&c.descuenta).sort((a,b)=>a.stock-b.stock);
  const bajos=list.filter(c=>c.stock<=u);
- if(!bajos.length){$("t_stock").innerHTML='<div class="empty" style="color:#2f8f4e">✅ Stock OK — todos los productos por encima del umbral</div>';return;}
+ if(!bajos.length){$("stock_card").style.display="none";return;}$("stock_card").style.display="";
  let h='<table><tr><th>Producto</th><th>Rubro</th><th class="r">Stock</th><th></th></tr>';
  bajos.slice(0,10).forEach(c=>{const bad=c.stock<=u;
   h+='<tr class="'+(bad?"stock-bad":"")+'"><td>'+c.prod+'</td><td>'+c.rubro+'</td><td class="r">'+c.stock+'</td><td class="r"><span class="tag '+(bad?"r":"o")+'">'+(bad?"BAJO":"OK")+'</span></td></tr>';});
