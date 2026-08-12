@@ -205,7 +205,7 @@ async function cargar(intento){
  try{
   const d=await jsonp("action=dashboard&clave="+encodeURIComponent(CLAVE));
   if(!d||!d.ok){$("load").innerHTML='<div class="t" style="color:#b23b3b">No se pudo cargar ('+((d&&d.error)||"error")+')</div>';return;}
-  DATA=d; initFiltros(); $("upd").textContent="Actualizado "+d.meta.generado; $("umbral").textContent=d.meta.umbralStock;
+  DATA=d; initFiltros(); $("upd").textContent="Actualizado "+d.meta.generado;
   render(); $("load").classList.add("hide"); setTimeout(()=>$("load").style.display="none",500);
  }catch(e){
   if(intento<3){
