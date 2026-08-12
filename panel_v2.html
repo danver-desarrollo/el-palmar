@@ -37,8 +37,8 @@ a{color:inherit}
 .filtros select,.filtros input[type=date]{border:1.5px solid var(--linea);border-radius:9px;padding:8px 10px;font-size:13px;
  background:#fff;color:var(--tinta);min-width:130px;font-family:inherit}
 .filtros select:focus,.filtros input:focus{outline:none;border-color:var(--dorado)}
-.chip-rango{display:none;gap:8px}
-.chip-rango.on{display:flex}
+.filtros .chip-rango{display:none;gap:8px}
+.filtros .chip-rango.on{display:flex}
 
 /* KPIS */
 .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
@@ -147,7 +147,7 @@ tr:last-child td{border-bottom:none}
    <div class="grp"><label>Desde</label><input type="date" id="fDesde" onchange="render()"></div>
    <div class="grp"><label>Hasta</label><input type="date" id="fHasta" onchange="render()"></div>
   </div>
-  <div class="grp"><label>Cancha</label><select id="fCancha" onchange="render()"><option value="">Todas</option></select></div>
+  <div class="grp"><label>Sector</label><select id="fSector" onchange="render()"><option value="">Todos</option></select></div>
  </div>
 
  <div class="kpis" id="kpis"></div>
@@ -168,11 +168,11 @@ tr:last-child td{border-bottom:none}
   <div class="card"><h3><span class="e">🏆</span> Top productos vendidos</h3><div class="cv sm"><canvas id="c_top"></canvas></div></div>
  </div>
 
- <div class="sec-header" style="margin-top:24px"><h2>📋 Detalle de Reservas</h2></div>
- <div class="card full"><h3><span class="e">📋</span> Reservas del período</h3><div id="t_reservas" style="max-height:440px;overflow:auto"></div></div>
+ <div class="sec-header" style="margin-top:24px" id="sec_reservas"><h2>📋 Detalle de Reservas</h2></div>
+ <div class="card full" id="t_reservas_card"><h3><span class="e">📋</span> Reservas del período</h3><div id="t_reservas" style="max-height:440px;overflow:auto"></div></div>
 
- <div class="sec-header" style="margin-top:24px"><h2>🧾 Buffet, Stock y Movimientos</h2></div>
- <div class="grid3">
+ <div class="sec-header" style="margin-top:24px" id="sec_buffet"><h2>🧾 Buffet, Stock y Movimientos</h2></div>
+ <div class="grid3" id="grid_buffet">
   <div class="card"><h3><span class="e">🏆</span> Más vendidos del buffet</h3><div id="t_top"></div></div>
   <div class="card"><h3><span class="e">⚠️</span> Alertas de stock (≤ <span id="umbral">5</span>)</h3><div id="t_stock"></div></div>
   <div class="card"><h3><span class="e">🧾</span> Últimos movimientos</h3><div id="t_mov"></div></div>
@@ -210,7 +210,8 @@ function recargar(){ $("load").style.display="flex"; cargar(); }
 
 function initFiltros(){
  const canchas=[...new Set(DATA.tur.map(t=>t.cancha))].sort();
- fill("fCancha",canchas);
+ fill("fSector",canchas);
+  const ob=document.createElement("option");ob.value="BUFFET";ob.textContent="Buffet";$("fSector").appendChild(ob);
 }
 function fill(id,arr){const s=$(id);arr.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;s.appendChild(o);});}
 function onPer(){ $("rango").classList.toggle("on",$("fPer").value==="rango"); render(); }
@@ -234,9 +235,11 @@ const esEfe=m=>m==="EFECTIVO";
 /* ---- RENDER ---- */
 function render(){
  if(!DATA)return;
- const [A,B]=rango(); const fc=$("fCancha").value, fr="", fm="", fe="";
- const mov=DATA.mov.filter(m=>inR(m.f,A,B) && !m.rev);
- const tur=DATA.tur.filter(t=>inR(t.f,A,B) && (!fc||t.cancha===fc));
+ const [A,B]=rango(); const sec=$("fSector").value, fr="", fm="", fe="";
+ const esBuf=sec==="BUFFET", esCancha=sec&&!esBuf;
+ const CATS_CANCHA=["RESERVA","SEÑA"];
+ const mov=DATA.mov.filter(m=>inR(m.f,A,B)&&!m.rev&&(esBuf?!CATS_CANCHA.includes(m.cat):esCancha?CATS_CANCHA.includes(m.cat):true));
+ const tur=DATA.tur.filter(t=>inR(t.f,A,B)&&(esCancha?t.cancha===sec:true));
  const vd =DATA.vd.filter(v=>inR(v.f,A,B));
 
  const ent=mov.filter(m=>m.tipo==="ENTRADA"), sal=mov.filter(m=>m.tipo==="SALIDA");
@@ -260,7 +263,7 @@ function render(){
    {label:"Ingresos",data:dias.map(d=>sum(ent.filter(m=>m.f===d),m=>m.monto)),backgroundColor:"#2f8f4e",borderColor:"#2f8f4e"},
    {label:"Egresos",data:dias.map(d=>sum(sal.filter(m=>m.f===d),m=>m.monto)),backgroundColor:"#b23b3b",borderColor:"#b23b3b"}
  ]);
- doughnut("c_cat",agg(ent,m=>m.cat,m=>m.monto));
+ doughnut("c_cat",agg(ent,m=>{const ct=m.cat;return(ct==="SEÑA"||ct==="RESERVA")?"Canchas":ct;},m=>m.monto));
  doughnut("c_medio",agg(ent,m=>m.medio||"—",m=>m.monto));
  bar("c_cancha",agg(resAct,t=>t.cancha,t=>t.precio),"Ingresos","#0e2924");
  const rdias=[...new Set(tur.map(t=>t.f))].sort();
@@ -280,7 +283,12 @@ function render(){
  tablaMov(mov);
  tablaReservas(tur);
 
- /* Insights */
+ /* Sector visibility */
+  if($("sec_reservas")){$("sec_reservas").style.display=esBuf?"none":"";}
+  if($("t_reservas_card")){$("t_reservas_card").style.display=esBuf?"none":"";}
+  if($("sec_buffet")){$("sec_buffet").style.display=esCancha?"none":"";}
+  if($("grid_buffet")){$("grid_buffet").style.display=esCancha?"none":"";}
+  /* Insights */
  insights(ent,sal,resAct,tur,vd,tIn,tOut,movNeto);
 }
 
