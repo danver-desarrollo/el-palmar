@@ -262,7 +262,7 @@ function render(){
   kpi("Egresos",money(tOut),sal.length+" mov.","neg","💸"),
   kpi("Movimiento neto",(movNeto<0?"- ":"")+money(Math.abs(movNeto)),"ingresos − egresos",movNeto<0?"neg":"pos","📊"),
   kpi("Reservas",resAct.length,tur.filter(t=>t.canc).length+" canceladas","","📅"),
-  kpiCaja("Saldo de caja",money(caja.saldo),cajaBadge+" · "+(caja.fecha||"—"))
+  kpiCaja("Efectivo en caja",money(caja.saldo),cajaBadge+" · "+(caja.fecha||"—"))
  ].join("");
 
  /* Charts */
