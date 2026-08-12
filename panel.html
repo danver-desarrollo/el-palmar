@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -53,7 +53,7 @@ a{color:inherit}
 .kpi .v{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--verde);margin-top:6px;line-height:1.1}
 .kpi.neg .v{color:var(--rojo)} .kpi.pos .v{color:var(--ok)}
 .kpi .d{font-size:10.5px;color:var(--gris);margin-top:3px}
-.kpi.caja{border-left-color:var(--verde);background:linear-gradient(120deg,var(--verde) 0%,var(--verde3) 100%);color:var(--crema);text-align:right}
+.kpi.caja{border-left-color:var(--verde);background:linear-gradient(120deg,var(--verde) 0%,var(--verde3) 100%);color:var(--crema);text-align:left}
 .kpi.caja .ic{right:auto;left:10px}
 .kpi.caja .k{color:var(--dorado2)} .kpi.caja .v{color:#fff} .kpi.caja .d{color:#cfe}
 .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.5px}
@@ -91,6 +91,13 @@ tr:last-child td{border-bottom:none}
 .est{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
 .est.res{background:#eef1ee;color:#5a6b63} .est.sena{background:#fbf1dc;color:#8a5b13} .est.pag{background:#e7f4ea;color:#256b3c} .est.can{background:#f7e7e7;color:#a53535;text-decoration:line-through}
 .stock-bad{background:#fbeaea} .stock-bad td:first-child{border-left:3px solid var(--rojo)}
+.stock-overview{max-height:210px;overflow-y:auto}
+.stock-overview table{width:100%;border-collapse:collapse;font-size:12px}
+.stock-overview th{text-align:left;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--gris);font-weight:700;padding:5px 6px;border-bottom:2px solid var(--linea);position:sticky;top:0;background:var(--papel)}
+.stock-overview td{padding:5px 6px;border-bottom:1px solid #f2efe7}
+.stock-overview td.r,.stock-overview th.r{text-align:right;font-variant-numeric:tabular-nums}
+.stock-overview tr.low td{color:var(--rojo);font-weight:700}
+.stock-overview tr:last-child td{border-bottom:none}
 .tag{font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px}
 .tag.r{background:#fbeaea;color:var(--rojo)} .tag.o{background:#eaf5ec;color:var(--ok)}
 .empty{color:var(--gris);font-size:13px;text-align:center;padding:22px}
@@ -116,7 +123,7 @@ tr:last-child td{border-bottom:none}
  .insights ul{grid-template-columns:1fr}
 }
 @media(max-width:520px){
- .kpis .kpi.caja{grid-column:1 / -1;text-align:left}
+ .kpis .kpi.caja{grid-column:1 / -1;text-align:right}
  .filtros{flex-direction:column;align-items:stretch;gap:2px;padding:10px 14px}
  .filtros .grp{width:100%}
  .filtros select,.filtros input[type=date]{width:100%;min-width:0}
@@ -173,6 +180,7 @@ tr:last-child td{border-bottom:none}
   <div class="card full"><h3><span class="e">📈</span> Ingresos vs Egresos por día</h3><div class="cv"><canvas id="c_flujo"></canvas></div></div>
   <div class="card" id="card_cat"><h3><span class="e">🥧</span> Ingresos por categoría</h3><div class="cv sm"><canvas id="c_cat"></canvas></div></div>
   <div class="card"><h3><span class="e">💳</span> Medios de pago</h3><div class="cv sm"><canvas id="c_medio"></canvas></div></div>
+  <div class="card" id="card_stock_overview" style="display:none"><h3><span class="e">📦</span> Stock de productos</h3><div class="stock-overview" id="stock_overview"></div></div>
   <div class="card" id="card_cancha"><h3><span class="e">🏟️</span> Ingresos por alquiler de cancha</h3><div class="cv sm"><canvas id="c_cancha"></canvas></div></div>
    <div class="card" id="card_egr"><h3><span class="e">📉</span> Egresos por categoría</h3><div class="cv sm"><canvas id="c_egr"></canvas></div></div>
  </div>
@@ -273,7 +281,7 @@ function render(){
   kpi("Ingresos",money(tIn),ent.length+" mov.","pos","💚"),
   kpi("Egresos",money(tOut),sal.length+" mov.","neg","💸"),
   kpi("Movimiento neto",(movNeto<0?"- ":"")+money(Math.abs(movNeto)),"ingresos − egresos",movNeto<0?"neg":"pos","📊"),
-  kpi("Reservas",resAct.length,tur.filter(t=>t.canc).length+" canceladas","","📅"),
+  (esBuf?"":kpi("Reservas",resAct.length,tur.filter(t=>t.canc).length+" canceladas","","📅")),
    (sec===""?kpiCaja("Efectivo en caja",money(caja.saldo),cajaBadge+" · "+(caja.fecha||"—")):"")
  ].join("");
 
@@ -304,6 +312,7 @@ function render(){
    if($("card_cancha")){$("card_cancha").style.display=esBuf?"none":"";}
    if($("card_cat")){$("card_cat").style.display=(esBuf||esCancha)?"none":"";}
    if($("card_egr")){$("card_egr").style.display=(esBuf||esCancha)?"none":"";}
+    if($("card_stock_overview")){$("card_stock_overview").style.display=esBuf?"":"none";stockOverview();}
   /* Insights */
  insights(ent,sal,resAct,tur,vd,tIn,tOut,movNeto,esBuf,esCancha);
 }
@@ -351,6 +360,17 @@ function tablaStock(fr){
  h+='</table>';
  if(bajos.length) h='<div style="font-size:12px;color:#b23b3b;font-weight:700;margin-bottom:8px">⚠️ '+bajos.length+' producto(s) por reponer</div>'+h;
  $("t_stock").innerHTML=h;
+}
+function stockOverview(){
+  const LOW=6;
+  const list=DATA.catalogo.filter(c=>c.activo&&c.descuenta).sort((a,b)=>a.stock-b.stock);
+  if(!list.length){$("stock_overview").innerHTML='<div class="empty">Sin productos</div>';return;}
+  let h='<table><tr><th>Producto</th><th class="r">Stock</th></tr>';
+  list.forEach(c=>{
+    const isLow=c.stock<LOW;
+    h+='<tr class="'+(isLow?'low':'')+'"><td>'+c.prod+'</td><td class="r">'+c.stock+'</td></tr>';
+  });
+  $("stock_overview").innerHTML=h+'</table>';
 }
 function estPill(e){var m={"RESERVADO":"res","CON SEÑA":"sena","PAGADO":"pag","CANCELADO":"can"};return '<span class="est '+(m[e]||"res")+'">'+e+'</span>';}
 function tablaReservas(tur){
