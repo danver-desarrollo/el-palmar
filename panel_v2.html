@@ -281,7 +281,8 @@ function render(){
   bar("c_egr",agg(sal,m=>m.cat||"—",m=>m.monto),"Egresos","#b23b3b");
 
  /* Tablas */
- tablaTop(top);
+  const top=aggArr(vd,v=>v.prod,v=>v.cant).sort((a,b)=>b.v-a.v).slice(0,8);
+  tablaTop(top);
  tablaStock(fr);
  tablaMov(mov);
  tablaReservas(tur);
