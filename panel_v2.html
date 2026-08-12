@@ -388,7 +388,7 @@ function insights(ent,sal,resAct,tur,vd,tIn,tOut,mov,esBuf,esCancha){
  // stock — solo si NO es cancha
  if(!esCancha){
   const bajos=DATA.catalogo.filter(c=>c.activo&&c.descuenta&&c.stock<=DATA.meta.umbralStock).length;
-  L.push(bajos?("Stock: <b>"+bajos+" producto(s)</b> por reponer ⚠️"):"Stock: <b>todo en orden</b> ✅");
+  if(bajos)L.push("Stock bajo: <b>"+bajos+" producto(s)</b> por reponer ⚠️");
  }
  $("insights").innerHTML=L.map(x=>"<li>"+x+"</li>").join("");
 }
