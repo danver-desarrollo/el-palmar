@@ -301,7 +301,7 @@ function render(){
   if($("sec_buffet")){$("sec_buffet").style.display=esCancha?"none":"";}
   if($("grid_buffet")){$("grid_buffet").style.display=esCancha?"none":"";}
   /* Insights */
- insights(ent,sal,resAct,tur,vd,tIn,tOut,movNeto);
+ insights(ent,sal,resAct,tur,vd,tIn,tOut,movNeto,esBuf,esCancha);
 }
 
 /* ---- helpers de datos ---- */
@@ -366,29 +366,37 @@ function tablaMov(mov){
 }
 
 /* ---- insights ---- */
-function insights(ent,sal,resAct,tur,vd,tIn,tOut,mov){
+function insights(ent,sal,resAct,tur,vd,tIn,tOut,mov,esBuf,esCancha){
  const L=[];
- // día pico ingresos
+ // día pico ingresos — siempre (datos ya filtrados)
  const pd=aggArr(ent,m=>m.f,m=>m.monto).sort((a,b)=>b.v-a.v)[0];
  if(pd)L.push("Día de mayor ingreso: <b>"+fmtDia(pd.k)+"</b> ("+money(pd.v)+")");
- // cancha estrella
- const pc=aggArr(resAct,t=>t.cancha,()=>1).sort((a,b)=>b.v-a.v)[0];
- if(pc)L.push("Cancha más usada: <b>"+pc.k+"</b> ("+pc.v+" reservas)");
- // producto estrella
- const pp=aggArr(vd,v=>v.prod,v=>v.cant).sort((a,b)=>b.v-a.v)[0];
- if(pp)L.push("Producto estrella del buffet: <b>"+pp.k+"</b> ("+pp.v+" u.)");
- // resultado
+ // cancha más usada — solo si NO es buffet
+ if(!esBuf){
+  const pc=aggArr(resAct,t=>t.cancha,()=>1).sort((a,b)=>b.v-a.v)[0];
+  if(pc)L.push("Cancha más usada: <b>"+pc.k+"</b> ("+pc.v+" reservas)");
+ }
+ // producto más vendido del buffet — solo si NO es cancha
+ if(!esCancha){
+  const pp=aggArr(vd,v=>v.prod,v=>v.cant).sort((a,b)=>b.v-a.v)[0];
+  if(pp)L.push("Producto más vendido del buffet: <b>"+pp.k+"</b> ("+pp.v+" u.)");
+ }
+ // resultado — siempre
  L.push("Resultado del período: <b>"+(mov<0?"- ":"")+money(Math.abs(mov))+"</b> ("+(mov>=0?"positivo":"negativo")+")");
- // cancelación
- const tot=tur.length, canc=tur.filter(t=>t.canc).length;
- if(tot)L.push("Tasa de cancelación: <b>"+Math.round(canc/tot*100)+"%</b> ("+canc+"/"+tot+")");
- // confirmación
- if(resAct.length)L.push("Reservas confirmadas: <b>"+Math.round(resAct.filter(t=>t.conf).length/resAct.length*100)+"%</b>");
- // % electrónico
+ // cancelación — solo si NO es buffet
+ if(!esBuf){
+  const tot=tur.length, canc=tur.filter(t=>t.canc).length;
+  if(tot)L.push("Tasa de cancelación: <b>"+Math.round(canc/tot*100)+"%</b> ("+canc+"/"+tot+")");
+ }
+ // confirmación — solo si NO es buffet
+ if(!esBuf && resAct.length)L.push("Reservas confirmadas: <b>"+Math.round(resAct.filter(t=>t.conf).length/resAct.length*100)+"%</b>");
+ // % electrónico — siempre
  if(tIn)L.push("Cobros electrónicos: <b>"+Math.round(sum(ent.filter(m=>!esEfe(m.medio)),m=>m.monto)/tIn*100)+"%</b> del ingreso");
- // stock
- const bajos=DATA.catalogo.filter(c=>c.activo&&c.descuenta&&c.stock<=DATA.meta.umbralStock).length;
- L.push(bajos?("Stock: <b>"+bajos+" producto(s)</b> por reponer ⚠️"):"Stock: <b>todo en orden</b> ✅");
+ // stock — solo si NO es cancha
+ if(!esCancha){
+  const bajos=DATA.catalogo.filter(c=>c.activo&&c.descuenta&&c.stock<=DATA.meta.umbralStock).length;
+  L.push(bajos?("Stock: <b>"+bajos+" producto(s)</b> por reponer ⚠️"):"Stock: <b>todo en orden</b> ✅");
+ }
  $("insights").innerHTML=L.map(x=>"<li>"+x+"</li>").join("");
 }
 
