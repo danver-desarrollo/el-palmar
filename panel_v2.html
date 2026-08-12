@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -163,13 +163,9 @@ tr:last-child td{border-bottom:none}
   <div class="card full"><h3><span class="e">📈</span> Ingresos vs Egresos por día</h3><div class="cv"><canvas id="c_flujo"></canvas></div></div>
   <div class="card"><h3><span class="e">🥧</span> Ingresos por categoría</h3><div class="cv sm"><canvas id="c_cat"></canvas></div></div>
   <div class="card"><h3><span class="e">💳</span> Medios de pago</h3><div class="cv sm"><canvas id="c_medio"></canvas></div></div>
-  <div class="card"><h3><span class="e">🏟️</span> Ingresos por cancha</h3><div class="cv sm"><canvas id="c_cancha"></canvas></div></div>
-  <div class="card"><h3><span class="e">📅</span> Reservas por día</h3><div class="cv sm"><canvas id="c_resdia"></canvas></div></div>
-  <div class="card"><h3><span class="e">✅</span> Reservas por estado</h3><div class="cv sm"><canvas id="c_resest"></canvas></div></div>
-  <div class="card"><h3><span class="e">🧃</span> Buffet: ventas por rubro</h3><div class="cv sm"><canvas id="c_rubro"></canvas></div></div>
-  <div class="card"><h3><span class="e">💵</span> Ingresos: efectivo vs electrónico</h3><div class="cv sm"><canvas id="c_efe"></canvas></div></div>
-  <div class="card"><h3><span class="e">📉</span> Egresos por categoría</h3><div class="cv sm"><canvas id="c_egr"></canvas></div></div>
-  <div class="card"><h3><span class="e">🏆</span> Top productos vendidos</h3><div class="cv sm"><canvas id="c_top"></canvas></div></div>
+  <div class="card" id="card_cancha"><h3><span class="e">🏟️</span> Ingresos por cancha</h3><div class="cv sm"><canvas id="c_cancha"></canvas></div></div>
+   <div class="card"><h3><span class="e">💵</span> Ingresos: efectivo vs electrónico</h3><div class="cv sm"><canvas id="c_efe"></canvas></div></div>
+   <div class="card" id="card_egr"><h3><span class="e">📉</span> Egresos por categoría</h3><div class="cv sm"><canvas id="c_egr"></canvas></div></div>
  </div>
 
  <div class="sec-header" style="margin-top:24px" id="sec_reservas"><h2>📋 Detalle de Reservas</h2></div>
@@ -278,16 +274,10 @@ function render(){
  doughnut("c_cat",agg(ent,m=>{const ct=m.cat;return(ct==="SEÑA"||ct==="RESERVA")?"Canchas":ct;},m=>m.monto));
  doughnut("c_medio",agg(ent,m=>m.medio||"—",m=>m.monto));
  bar("c_cancha",agg(resAct,t=>t.cancha,t=>t.precio),"Ingresos","#0e2924");
- const rdias=[...new Set(tur.map(t=>t.f))].sort();
- bar("c_resdia",{labels:rdias.map(fmtDia),data:rdias.map(d=>tur.filter(t=>t.f===d&&!t.canc).length)},"Reservas","#4a7c66");
- doughnut("c_resest",{labels:["Confirmadas","Pendientes","Canceladas"],data:[
-   resAct.filter(t=>t.conf).length, resAct.filter(t=>!t.conf).length, tur.filter(t=>t.canc).length]});
- bar("c_rubro",agg(vd,v=>v.rubro,v=>v.subtotal),"Ventas","#c89333");
- doughnut("c_efe",{labels:["Efectivo","Electrónico"],data:[
-   sum(ent.filter(m=>esEfe(m.medio)),m=>m.monto), sum(ent.filter(m=>!esEfe(m.medio)),m=>m.monto)]});
- bar("c_egr",agg(sal,m=>m.cat||"—",m=>m.monto),"Egresos","#b23b3b");
- const top=aggArr(vd,v=>v.prod,v=>v.cant).sort((a,b)=>b.v-a.v).slice(0,8);
- hbar("c_top",{labels:top.map(x=>x.k),data:top.map(x=>x.v)},"Unidades","#c89333");
+
+  doughnut("c_efe",{labels:["Efectivo","Electrónico"],data:[
+    sum(ent.filter(m=>esEfe(m.medio)),m=>m.monto), sum(ent.filter(m=>!esEfe(m.medio)),m=>m.monto)]});
+  bar("c_egr",agg(sal,m=>m.cat||"—",m=>m.monto),"Egresos","#b23b3b");
 
  /* Tablas */
  tablaTop(top);
@@ -300,6 +290,8 @@ function render(){
   if($("t_reservas_card")){$("t_reservas_card").style.display=esBuf?"none":"";}
   if($("sec_buffet")){$("sec_buffet").style.display=esCancha?"none":"";}
   if($("grid_buffet")){$("grid_buffet").style.display=esCancha?"none":"";}
+   if($("card_cancha")){$("card_cancha").style.display=esBuf?"none":"";}
+   if($("card_egr")){$("card_egr").style.display=(esBuf||esCancha)?"none":"";}
   /* Insights */
  insights(ent,sal,resAct,tur,vd,tIn,tOut,movNeto,esBuf,esCancha);
 }
