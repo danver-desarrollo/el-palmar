@@ -180,7 +180,7 @@ tr:last-child td{border-bottom:none}
   <div class="card full"><h3><span class="e">📈</span> Ingresos vs Egresos por día</h3><div class="cv"><canvas id="c_flujo"></canvas></div></div>
   <div class="card" id="card_cat"><h3><span class="e">🥧</span> Ingresos por categoría</h3><div class="cv sm"><canvas id="c_cat"></canvas></div></div>
   <div class="card"><h3><span class="e">💳</span> Medios de pago</h3><div class="cv sm"><canvas id="c_medio"></canvas></div></div>
-  <div class="card" id="card_stock_overview" style="display:none"><h3><span class="e">📦</span> Stock de productos</h3><div class="stock-overview" id="stock_overview"></div></div>
+  <div class="card" id="card_stock_overview" style="display:none"><h3><span class="e">📦</span> Control de Stock</h3><div class="stock-overview" id="stock_overview"></div></div>
   <div class="card" id="card_cancha"><h3><span class="e">🏟️</span> Ingresos por alquiler de cancha</h3><div class="cv sm"><canvas id="c_cancha"></canvas></div></div>
    <div class="card" id="card_egr"><h3><span class="e">📉</span> Egresos por categoría</h3><div class="cv sm"><canvas id="c_egr"></canvas></div></div>
  </div>
@@ -188,10 +188,9 @@ tr:last-child td{border-bottom:none}
  <div class="sec-header" style="margin-top:24px" id="sec_reservas"><h2>📋 Detalle de Reservas</h2></div>
  <div class="card full" id="t_reservas_card"><h3><span class="e">📋</span> Reservas del período</h3><div id="t_reservas" style="max-height:440px;overflow:auto"></div></div>
 
- <div class="sec-header" style="margin-top:24px" id="sec_buffet"><h2>🧾 Buffet, Stock y Movimientos</h2></div>
- <div class="grid3" id="grid_buffet">
+ <div class="sec-header" style="margin-top:24px" id="sec_buffet"><h2>🧾 Buffet y Movimientos</h2></div>
+ <div class="grid" id="grid_buffet">
   <div class="card"><h3><span class="e">🏆</span> Más vendidos del buffet</h3><div id="t_top"></div></div>
-  <div class="card" id="stock_card"><h3><span class="e">📦</span> Control de Stock</h3><div id="t_stock"></div></div>
   <div class="card"><h3><span class="e">🧾</span> Últimos movimientos</h3><div id="t_mov"></div></div>
  </div>
 
@@ -309,7 +308,7 @@ function render(){
  /* Tablas */
   const top=aggArr(vd,v=>v.prod,v=>v.cant).sort((a,b)=>b.v-a.v).slice(0,8);
   tablaTop(top);
- tablaStock(fr);
+
  tablaMov(mov);
  tablaReservas(tur);
 
@@ -358,28 +357,21 @@ function tablaTop(top){
  top.forEach((x,i)=>h+='<tr><td>'+(i+1)+'</td><td>'+x.k+'</td><td class="r">'+x.v+'</td></tr>');
  $("t_top").innerHTML=h+'</table>';
 }
-function tablaStock(fr){
- const u=DATA.meta.umbralStock;
- const list=DATA.catalogo.filter(c=>c.activo&&c.descuenta).sort((a,b)=>a.stock-b.stock);
- const bajos=list.filter(c=>c.stock<=u);
- if(!bajos.length){$("stock_card").style.display="none";return;}$("stock_card").style.display="";
- let h='<table><tr><th>Producto</th><th>Rubro</th><th class="r">Stock</th><th></th></tr>';
- bajos.slice(0,10).forEach(c=>{const bad=c.stock<=u;
-  h+='<tr class="'+(bad?"stock-bad":"")+'"><td>'+c.prod+'</td><td>'+c.rubro+'</td><td class="r">'+c.stock+'</td><td class="r"><span class="tag '+(bad?"r":"o")+'">'+(bad?"BAJO":"OK")+'</span></td></tr>';});
- h+='</table>';
- if(bajos.length) h='<div style="font-size:12px;color:#b23b3b;font-weight:700;margin-bottom:8px">⚠️ '+bajos.length+' producto(s) por reponer</div>'+h;
- $("t_stock").innerHTML=h;
-}
 function stockOverview(){
   const LOW=6;
   const list=DATA.catalogo.filter(c=>c.activo&&c.descuenta).sort((a,b)=>a.stock-b.stock);
   if(!list.length){$("stock_overview").innerHTML='<div class="empty">Sin productos</div>';return;}
-  let h='<table><tr><th>Producto</th><th class="r">Stock</th></tr>';
+  const bajos=list.filter(c=>c.stock<LOW);
+  let alert='';
+  if(bajos.length) alert='<div style="font-size:12px;color:#b23b3b;font-weight:700;margin-bottom:8px">⚠️ '+bajos.length+' producto(s) por reponer</div>';
+  let h='<table><tr><th>Producto</th><th class="r">Stock</th><th></th></tr>';
   list.forEach(c=>{
     const isLow=c.stock<LOW;
-    h+='<tr class="'+(isLow?'low':'')+'"><td>'+c.prod+'</td><td class="r">'+c.stock+'</td></tr>';
+    h+='<tr class="'+(isLow?'low':'')+'">';
+    h+='<td>'+c.prod+'</td><td class="r">'+c.stock+'</td>';
+    h+='<td class="r">'+(isLow?'<span class="tag r">BAJO</span>':'')+'</td></tr>';
   });
-  $("stock_overview").innerHTML=h+'</table>';
+  $("stock_overview").innerHTML=alert+h+'</table>';
 }
 function estPill(e){var m={"RESERVADO":"res","CON SEÑA":"sena","PAGADO":"pag","CANCELADO":"can"};return '<span class="est '+(m[e]||"res")+'">'+e+'</span>';}
 function tablaReservas(tur){
