@@ -277,8 +277,6 @@ function render(){
  doughnut("c_medio",agg(ent,m=>m.medio||"—",m=>m.monto));
  bar("c_cancha",agg(resAct,t=>t.cancha,t=>t.precio),"Ingresos","#0e2924");
 
-  doughnut("c_efe",{labels:["Efectivo","Electrónico"],data:[
-    sum(ent.filter(m=>esEfe(m.medio)),m=>m.monto), sum(ent.filter(m=>!esEfe(m.medio)),m=>m.monto)]});
   bar("c_egr",agg(sal,m=>m.cat||"—",m=>m.monto),"Egresos","#b23b3b");
 
  /* Tablas */
