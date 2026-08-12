@@ -116,14 +116,14 @@ tr:last-child td{border-bottom:none}
  .insights ul{grid-template-columns:1fr}
 }
 @media(max-width:520px){
- .kpis .kpi:last-child{grid-column:1 / -1;text-align:left}
+ .kpis .kpi.caja{grid-column:1 / -1;text-align:left}
  .filtros{flex-direction:column;align-items:stretch;gap:2px;padding:10px 14px}
  .filtros .grp{width:100%}
  .filtros select,.filtros input[type=date]{width:100%;min-width:0}
  .filtros .sep{display:none}
  .kpis{grid-template-columns:1fr 1fr}
- .top .in{flex-wrap:wrap}
- .top-brand{flex:0 0 auto}
+ .top .in{flex-wrap:wrap;justify-content:center}
+ .top-brand{flex:0 0 100%;display:flex;align-items:center;justify-content:center;gap:8px}
  .top-brand img{height:36px}
  .top h1{font-size:15px;letter-spacing:1px}
  .top-right{width:100%;justify-content:space-between}
@@ -274,7 +274,7 @@ function render(){
   kpi("Egresos",money(tOut),sal.length+" mov.","neg","💸"),
   kpi("Movimiento neto",(movNeto<0?"- ":"")+money(Math.abs(movNeto)),"ingresos − egresos",movNeto<0?"neg":"pos","📊"),
   kpi("Reservas",resAct.length,tur.filter(t=>t.canc).length+" canceladas","","📅"),
-  (sec===""?kpiCaja("Efectivo en caja",money(caja.saldo),cajaBadge+" · "+(caja.fecha||"—")):"")
+   (sec===""?kpiCaja("Efectivo en caja",money(caja.saldo),cajaBadge+" · "+(caja.fecha||"—")):"")
  ].join("");
 
  /* Charts */
