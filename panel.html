@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -237,9 +237,20 @@ async function cargar(intento){
 function recargar(){ $("load").style.display="flex"; cargar(); }
 
 function initFiltros(){
+ const sel=$("fSector");
+ /* limpiar opciones previas (excepto "Todos") */
+ while(sel.options.length>1) sel.remove(1);
  const canchas=[...new Set(DATA.tur.map(t=>t.cancha))].sort();
- fill("fSector",canchas);
-  const ob=document.createElement("option");ob.value="BUFFET";ob.textContent="Buffet";$("fSector").appendChild(ob);
+ const padel=canchas.filter(c=>/PAD/i.test(c));
+ const otras=canchas.filter(c=>!/PAD/i.test(c));
+ /* agregar canchas no-padel */
+ otras.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;sel.appendChild(o);});
+ /* si hay >1 padel, agregar opción agrupada */
+ if(padel.length>1){const o=document.createElement("option");o.value="PADEL";o.textContent="Padel (todas)";sel.appendChild(o);}
+ /* agregar padel individuales */
+ padel.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;sel.appendChild(o);});
+ /* agregar Buffet */
+ const ob=document.createElement("option");ob.value="BUFFET";ob.textContent="Buffet";sel.appendChild(ob);
 }
 function fill(id,arr){const s=$(id);arr.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;s.appendChild(o);});}
 function onPer(){ $("rango").classList.toggle("on",$("fPer").value==="rango"); render(); }
@@ -264,10 +275,10 @@ const esEfe=m=>m==="EFECTIVO";
 function render(){
  if(!DATA)return;
  const [A,B]=rango(); const sec=$("fSector").value, fr="", fm="", fe="";
- const esBuf=sec==="BUFFET", esCancha=sec&&!esBuf;
+ const esBuf=sec==="BUFFET", esPadel=sec==="PADEL", esCancha=(sec&&!esBuf);
  const CATS_CANCHA=["RESERVA","SEÑA"];
  const mov=DATA.mov.filter(m=>inR(m.f,A,B)&&!m.rev&&(esBuf?!CATS_CANCHA.includes(m.cat):esCancha?CATS_CANCHA.includes(m.cat):true));
- const tur=DATA.tur.filter(t=>inR(t.f,A,B)&&(esCancha?t.cancha===sec:true));
+ const tur=DATA.tur.filter(t=>inR(t.f,A,B)&&(esPadel?/PAD/i.test(t.cancha):esCancha?t.cancha===sec:true));
  const vd =DATA.vd.filter(v=>inR(v.f,A,B));
 
  const ent=mov.filter(m=>m.tipo==="ENTRADA"), sal=mov.filter(m=>m.tipo==="SALIDA");
