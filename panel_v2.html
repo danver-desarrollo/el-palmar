@@ -30,15 +30,18 @@ a{color:inherit}
 .btn-ref:hover{background:rgba(255,255,255,.22)}
 
 /* FILTROS */
-.filtros{background:var(--papel);border-radius:14px;box-shadow:var(--sombra);margin:16px 0;padding:12px 14px;
- display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.filtros .grp{display:flex;flex-direction:column;gap:3px}
-.filtros label{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--gris);font-weight:700}
-.filtros select,.filtros input[type=date]{border:1.5px solid var(--linea);border-radius:9px;padding:8px 10px;font-size:13px;
- background:#fff;color:var(--tinta);min-width:130px;font-family:inherit}
-.filtros select:focus,.filtros input:focus{outline:none;border-color:var(--dorado)}
-.filtros .chip-rango{display:none;gap:8px}
+.filtros{background:var(--papel);border-radius:14px;box-shadow:var(--sombra);margin:16px 0;padding:14px 18px;
+ display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.filtros .grp{display:flex;flex-direction:column;gap:4px}
+.filtros label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--gris);font-weight:700}
+.filtros select,.filtros input[type=date]{border:1.5px solid var(--linea);border-radius:10px;padding:9px 14px;font-size:13px;
+ background:#fff;color:var(--tinta);min-width:140px;font-family:inherit;transition:border-color .2s,box-shadow .2s;
+ cursor:pointer}
+.filtros select:hover,.filtros input:hover{border-color:var(--dorado2)}
+.filtros select:focus,.filtros input:focus{outline:none;border-color:var(--dorado);box-shadow:0 0 0 3px rgba(200,147,51,.12)}
+.filtros .chip-rango{display:none;gap:10px;padding:8px 14px;background:rgba(200,147,51,.06);border-radius:10px;border:1px dashed var(--dorado2);align-items:flex-end}
 .filtros .chip-rango.on{display:flex}
+.filtros .sep{width:1px;height:32px;background:var(--linea);margin:0 2px;align-self:flex-end}
 
 /* KPIS */
 .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
@@ -143,10 +146,11 @@ tr:last-child td{border-bottom:none}
     <option value="todo">Todo</option>
     <option value="rango">Rango…</option>
    </select></div>
-  <div class="grp chip-rango" id="rango">
+  <div class="chip-rango" id="rango">
    <div class="grp"><label>Desde</label><input type="date" id="fDesde" onchange="render()"></div>
    <div class="grp"><label>Hasta</label><input type="date" id="fHasta" onchange="render()"></div>
   </div>
+  <div class="sep"></div>
   <div class="grp"><label>Sector</label><select id="fSector" onchange="render()"><option value="">Todos</option></select></div>
  </div>
 
@@ -198,13 +202,21 @@ function jsonp(params){return new Promise((res,rej)=>{
  document.body.appendChild(s);
 });}
 
-async function cargar(){
+async function cargar(intento){
+ intento=intento||1;
  try{
   const d=await jsonp("action=dashboard&clave="+encodeURIComponent(CLAVE));
   if(!d||!d.ok){$("load").innerHTML='<div class="t" style="color:#b23b3b">No se pudo cargar ('+((d&&d.error)||"error")+')</div>';return;}
   DATA=d; initFiltros(); $("upd").textContent="Actualizado "+d.meta.generado; $("umbral").textContent=d.meta.umbralStock;
   render(); $("load").classList.add("hide"); setTimeout(()=>$("load").style.display="none",500);
- }catch(e){ $("load").innerHTML='<div class="t" style="color:#b23b3b">Error de conexión</div>'; }
+ }catch(e){
+  if(intento<3){
+   var lt=$("load").querySelector(".t"); if(lt) lt.textContent="Reintentando… ("+intento+"/3)";
+   setTimeout(function(){cargar(intento+1);},2000);
+  }else{
+   $("load").innerHTML='<div class="t" style="color:#b23b3b">Error de conexión</div><button onclick="recargar()" style="margin-top:14px;padding:10px 28px;border-radius:10px;border:1px solid var(--dorado);background:rgba(255,255,255,.1);color:var(--dorado2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.5px;transition:background .2s" onmouseover="this.style.background=\'rgba(255,255,255,.2)\'" onmouseout="this.style.background=\'rgba(255,255,255,.1)\'">↻ Reintentar</button>';
+  }
+ }
 }
 function recargar(){ $("load").style.display="flex"; cargar(); }
 
