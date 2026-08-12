@@ -30,7 +30,7 @@ a{color:inherit}
 .btn-ref:hover{background:rgba(255,255,255,.22)}
 
 /* FILTROS */
-.filtros{background:var(--papel);border-radius:14px;box-shadow:var(--sombra);margin:16px 0;padding:14px 18px;
+.filtros{background:var(--papel);border-radius:14px;box-shadow:var(--sombra);margin:16px 0;padding:14px 18px;border-left:4px solid var(--verde);
  display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
 .filtros .grp{display:flex;flex-direction:column;gap:4px}
 .filtros label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--gris);font-weight:700}
@@ -113,6 +113,7 @@ tr:last-child td{border-bottom:none}
  .insights ul{grid-template-columns:1fr}
 }
 @media(max-width:520px){
+ .kpis .kpi:last-child{grid-column:1 / -1}
  .filtros{flex-direction:column;align-items:stretch}
  .filtros .grp{width:100%}
  .filtros select,.filtros input[type=date]{width:100%;min-width:0}
