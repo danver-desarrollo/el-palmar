@@ -202,19 +202,22 @@ function jsonp(params){return new Promise((res,rej)=>{
 
 async function cargar(intento){
  intento=intento||1;
+ var d;
  try{
-  const d=await jsonp("action=dashboard&clave="+encodeURIComponent(CLAVE));
-  if(!d||!d.ok){$("load").innerHTML='<div class="t" style="color:#b23b3b">No se pudo cargar ('+((d&&d.error)||"error")+')</div>';return;}
-  DATA=d; initFiltros(); $("upd").textContent="Actualizado "+d.meta.generado;
-  render(); $("load").classList.add("hide"); setTimeout(()=>$("load").style.display="none",500);
+  d=await jsonp("action=dashboard&clave="+encodeURIComponent(CLAVE));
  }catch(e){
   if(intento<3){
    var lt=$("load").querySelector(".t"); if(lt) lt.textContent="Reintentando… ("+intento+"/3)";
-   setTimeout(function(){cargar(intento+1);},2000);
+   setTimeout(function(){cargar(intento+1);},2000);return;
   }else{
    $("load").innerHTML='<div class="t" style="color:#b23b3b">Error de conexión</div><button onclick="recargar()" style="margin-top:14px;padding:10px 28px;border-radius:10px;border:1px solid var(--dorado);background:rgba(255,255,255,.1);color:var(--dorado2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.5px;transition:background .2s" onmouseover="this.style.background=\'rgba(255,255,255,.2)\'" onmouseout="this.style.background=\'rgba(255,255,255,.1)\'">↻ Reintentar</button>';
   }
+  return;
  }
+ if(!d||!d.ok){$("load").innerHTML='<div class="t" style="color:#b23b3b">No se pudo cargar ('+(d&&d.error||"error")+')</div>';return;}
+ DATA=d; initFiltros(); $("upd").textContent="Actualizado "+d.meta.generado;
+ try{ render(); }catch(re){ console.error("Render error:",re); }
+ $("load").classList.add("hide"); setTimeout(()=>$("load").style.display="none",500);
 }
 function recargar(){ $("load").style.display="flex"; cargar(); }
 
