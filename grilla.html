@@ -92,13 +92,18 @@ table.pl{width:100%;border-collapse:separate;border-spacing:5px;min-width:340px}
 #load .t{color:var(--dorado2);font-family:var(--sans);letter-spacing:1px;font-size:13px}
 @keyframes pulse{0%,100%{opacity:.7;transform:scale(.97)}50%{opacity:1;transform:scale(1)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(24px);background:var(--verde);color:var(--crema);
- padding:13px 22px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.32);font-size:14.5px;font-weight:600;letter-spacing:.2px;
- border:1px solid var(--dorado);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:60;max-width:88%;text-align:center}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-#toast.ok{background:linear-gradient(120deg,var(--verde) 0%,var(--verde3) 100%)}
-#toast.err{background:var(--rojo);border-color:#e6a3a3}
-#toast b{color:var(--dorado2)}
+#okmodal{position:fixed;inset:0;background:rgba(14,41,36,.55);display:none;align-items:center;justify-content:center;z-index:70;padding:18px}
+#okmodal.show{display:flex}
+#okmodal .mc{background:var(--papel);border-radius:16px;max-width:400px;width:100%;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.4);border-top:5px solid var(--dorado)}
+#okmodal .mc-t{font-family:var(--serif);font-size:21px;font-weight:700;color:var(--verde);text-align:center}
+#okmodal .mc-t.err{color:var(--rojo)}
+#okmodal .mc-s{font-size:14px;color:var(--tinta);text-align:center;margin-top:8px;line-height:1.45}
+#okmodal .mc-steps{margin:16px 0 4px;padding-left:24px;display:flex;flex-direction:column;gap:9px}
+#okmodal .mc-steps li{font-size:15px;line-height:1.4;color:var(--tinta)}
+#okmodal .mc-steps li::marker{color:var(--dorado);font-weight:800}
+#okmodal .mc-steps b{color:var(--verde)}
+#okmodal .mc-btn{margin-top:18px;width:100%;background:linear-gradient(120deg,var(--verde) 0%,var(--verde3) 100%);color:var(--crema);border:none;border-radius:11px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.3px}
+#okmodal .mc-btn:active{opacity:.9}
 @media(max-width:520px){
  .pl thead th{font-size:12px;padding:7px 4px}
  .pl thead th.hcol,.pl td.hora{width:66px;font-size:11px}
@@ -148,6 +153,7 @@ table.pl{width:100%;border-collapse:separate;border-spacing:5px;min-width:340px}
  <div class="foot"><b>EL PALMAR</b> · Fútbol 5 &amp; Pádel · Disponibilidad · <b>Danver</b></div>
 </div>
 
+<div id="okmodal"><div class="mc"><div class="mc-body"></div><button class="mc-btn" onclick="cerrarModal()">Entendido</button></div></div>
 <script>
 const GAS="https://script.google.com/macros/s/AKfycbxYasftkvwQtwH1yp965tXuPn2TRlWg3EMJQ5HCggfAC0pukp_LdLSpbHTQp6lECN8w1Q/exec", CLAVE="elpalmar-panel-2026";
 const DL_BASE="https://www.appsheet.com/start/a22d88b0-cdcd-45d7-8e60-73cd9a886c97?platform=desktop#appName=ElPalmar-97095589&group=&table=Turnos&view=Turnos_Form&row=&Cancha=";
@@ -202,19 +208,28 @@ function tipoCls(t){t=(t||"").toUpperCase();return t==="EVENTUAL"?"t-even":t==="
 function estPill(e){var m={"RESERVADO":"res","CON SEÑA":"sena","PAGADO":"pag"};if(!m[e])return"";return '<span class="est '+m[e]+'">'+e+'</span>';}
 function linkReserva(cid,fecha,s){return DL_BASE+encodeURIComponent(cid)+"&Fecha="+fecha+"&Hora_Inicio="+hhmmss(s);}
 function linkDetalle(id){return DL_DET+encodeURIComponent(id);}
-function toast(msg, ok){
- var t=$("toast");
- if(!t){ t=document.createElement("div"); t.id="toast"; document.body.appendChild(t); }
- t.innerHTML=msg; t.className = "show" + (ok===true ? " ok" : ok===false ? " err" : "");
- clearTimeout(window.__tt);
- if(ok!==null){ window.__tt=setTimeout(function(){ t.className=""; }, ok===true?5000:3500); }
+function modal(html){ var m=$("okmodal"); m.querySelector(".mc-body").innerHTML=html; m.classList.add("show"); }
+function cerrarModal(){ $("okmodal").classList.remove("show"); }
+function esMobile(){ return /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent||""); }
+function pasosOK(){
+ var pasos = esMobile()
+  ? '<li><b>Cerrá</b> esta pantalla (la grilla).</li>'
+   +'<li>Volvé a la app <b>El&nbsp;Palmar</b>.</li>'
+   +'<li><b>Sincronizá</b>: deslizá la pantalla hacia abajo.</li>'
+   +'<li>Tocá <b>«Nueva Reserva»</b> — ya va cargada.</li>'
+  : '<li>Volvé a la pestaña de la app <b>El&nbsp;Palmar</b>.</li>'
+   +'<li><b>Sincronizá</b> la app (botón ↻).</li>'
+   +'<li>Tocá <b>«Nueva Reserva»</b> — ya va cargada.</li>';
+ return '<div class="mc-t">✓ Datos guardados</div>'
+   +'<div class="mc-s">Quedaron cargadas la cancha, la fecha y la hora. Para terminar la reserva:</div>'
+   +'<ol class="mc-steps">'+pasos+'</ol>';
 }
 function reservar(cancha,fecha,hora,ev){
  if(ev) ev.preventDefault();
- toast("Guardando…", null);
+ modal('<div class="mc-t">Guardando…</div><div class="spin" style="margin:14px auto"></div>');
  jsonp("action=setctx&clave="+encodeURIComponent(CLAVE)+"&cancha="+encodeURIComponent(cancha)+"&fecha="+encodeURIComponent(fecha)+"&hora="+encodeURIComponent(hora))
-  .then(function(r){ if(r&&r.ok){ toast("✓ Listo — abrí <b>«Nueva Reserva»</b> en la app", true); } else { toast("No se pudo guardar. Reintentá.", false); } })
-  .catch(function(){ toast("Sin conexión. Reintentá.", false); });
+  .then(function(r){ if(r&&r.ok){ modal(pasosOK()); } else { modal('<div class="mc-t err">No se pudo guardar</div><div class="mc-s">Reintentá en unos segundos.</div>'); } })
+  .catch(function(){ modal('<div class="mc-t err">Sin conexión</div><div class="mc-s">Reintentá.</div>'); });
  return false;
 }
 
@@ -260,7 +275,7 @@ function render(){
    const cell=occ[c.id][i];
    if(cell==="cont") return;               // cubierto por rowspan
    if(cell){ ocupados++;
-    h+='<td class="slot ocu '+tipoCls(cell.tipo)+'" rowspan="'+cell.span+'"><a class="det" href="'+linkDetalle(cell.id)+'" target="_blank" rel="noopener"><div class="cont"><span class="cli">'+esc(cell.cli||"Ocupado")+'</span>'+estPill(cell.estado)+'</div></a></td>';
+    h+='<td class="slot ocu '+tipoCls(cell.tipo)+'" rowspan="'+cell.span+'"><div class="cont"><span class="cli">'+esc(cell.cli||"Ocupado")+'</span>'+estPill(cell.estado)+'</div></td>';
    }else if(esHoy && s < ahoraMin){ // franja que ya pasó hoy
     h+='<td class="slot pasado"><span class="pas">—</span></td>';
    }else{ libres++;
