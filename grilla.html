@@ -92,6 +92,13 @@ table.pl{width:100%;border-collapse:separate;border-spacing:5px;min-width:340px}
 #load .t{color:var(--dorado2);font-family:var(--sans);letter-spacing:1px;font-size:13px}
 @keyframes pulse{0%,100%{opacity:.7;transform:scale(.97)}50%{opacity:1;transform:scale(1)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(24px);background:var(--verde);color:var(--crema);
+ padding:13px 22px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.32);font-size:14.5px;font-weight:600;letter-spacing:.2px;
+ border:1px solid var(--dorado);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:60;max-width:88%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{background:linear-gradient(120deg,var(--verde) 0%,var(--verde3) 100%)}
+#toast.err{background:var(--rojo);border-color:#e6a3a3}
+#toast b{color:var(--dorado2)}
 @media(max-width:520px){
  .pl thead th{font-size:12px;padding:7px 4px}
  .pl thead th.hcol,.pl td.hora{width:66px;font-size:11px}
@@ -195,10 +202,19 @@ function tipoCls(t){t=(t||"").toUpperCase();return t==="EVENTUAL"?"t-even":t==="
 function estPill(e){var m={"RESERVADO":"res","CON SEÑA":"sena","PAGADO":"pag"};if(!m[e])return"";return '<span class="est '+m[e]+'">'+e+'</span>';}
 function linkReserva(cid,fecha,s){return DL_BASE+encodeURIComponent(cid)+"&Fecha="+fecha+"&Hora_Inicio="+hhmmss(s);}
 function linkDetalle(id){return DL_DET+encodeURIComponent(id);}
+function toast(msg, ok){
+ var t=$("toast");
+ if(!t){ t=document.createElement("div"); t.id="toast"; document.body.appendChild(t); }
+ t.innerHTML=msg; t.className = "show" + (ok===true ? " ok" : ok===false ? " err" : "");
+ clearTimeout(window.__tt);
+ if(ok!==null){ window.__tt=setTimeout(function(){ t.className=""; }, ok===true?5000:3500); }
+}
 function reservar(cancha,fecha,hora,ev){
- if(ev){ ev.preventDefault(); var el=ev.currentTarget; if(el){ el.innerHTML='Abriendo…'; } }
- var go=function(){ window.location.href=FORM_URL; };
- jsonp("action=setctx&clave="+encodeURIComponent(CLAVE)+"&cancha="+encodeURIComponent(cancha)+"&fecha="+encodeURIComponent(fecha)+"&hora="+encodeURIComponent(hora)).then(go).catch(go);
+ if(ev) ev.preventDefault();
+ toast("Guardando…", null);
+ jsonp("action=setctx&clave="+encodeURIComponent(CLAVE)+"&cancha="+encodeURIComponent(cancha)+"&fecha="+encodeURIComponent(fecha)+"&hora="+encodeURIComponent(hora))
+  .then(function(r){ if(r&&r.ok){ toast("✓ Listo — abrí <b>«Nueva Reserva»</b> en la app", true); } else { toast("No se pudo guardar. Reintentá.", false); } })
+  .catch(function(){ toast("Sin conexión. Reintentá.", false); });
  return false;
 }
 
@@ -248,7 +264,7 @@ function render(){
    }else if(esHoy && s < ahoraMin){ // franja que ya pasó hoy
     h+='<td class="slot pasado"><span class="pas">—</span></td>';
    }else{ libres++;
-    h+='<td class="slot libre"><a class="reservar" href="'+FORM_URL+'" onclick="return reservar(\''+esc(c.id)+'\',\''+fecha+'\',\''+hhmmss(s)+'\',event)"><span class="plus">+</span>Reservar</a></td>';
+    h+='<td class="slot libre"><a class="reservar" href="javascript:void(0)" onclick="return reservar(\''+esc(c.id)+'\',\''+fecha+'\',\''+hhmmss(s)+'\',event)"><span class="plus">+</span>Reservar</a></td>';
    }
   });
   h+='</tr>';
