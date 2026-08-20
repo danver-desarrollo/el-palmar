@@ -37,32 +37,49 @@ body{background:#eef1ee;font-family:var(--sans);color:var(--tinta);-webkit-font-
 .nav button:hover{border-color:var(--dorado)}
 .nav .hoy{font-size:12px;letter-spacing:.5px}
 
-.head{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 12px;flex-wrap:wrap;gap:8px}
+.head{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 10px;flex-wrap:wrap;gap:8px}
 .head .dia{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--verde);text-transform:capitalize}
 .head .cta{font-size:12px;color:var(--gris)}
 .head .cta b{color:var(--verde)}
-.leg{display:flex;gap:14px;font-size:11px;color:var(--gris);align-items:center;flex-wrap:wrap}
+.leg{display:flex;gap:12px;font-size:11px;color:var(--gris);align-items:center;flex-wrap:wrap}
 .leg span{display:inline-flex;align-items:center;gap:5px}
 .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
-.dot.l{background:var(--libre)} .dot.o{background:var(--verde)}
+.dot.libre{background:var(--librebg);border:1px solid #bfe0c9}
+.dot.t-fijo{background:linear-gradient(120deg,var(--verde),var(--verde3))}
+.dot.t-even{background:linear-gradient(120deg,#8a3f1c,#b5652f)}
+.dot.t-esc{background:linear-gradient(120deg,#234e77,#2e6ba3)}
+.dot.t-tor{background:linear-gradient(120deg,#4a2f6b,#6b4a8f)}
 
-/* PLANILLA — renglones (una fila por franja horaria) */
-.grid{display:flex;flex-direction:column;gap:7px}
-.slot{display:flex;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:var(--sombra);border:1px solid transparent;min-height:50px}
-.slot .hora{flex:0 0 122px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;letter-spacing:.3px}
-.slot .cont{flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 16px;min-width:0}
-.slot .cont .cli{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.slot .cont .lib{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px}
-/* libre */
-.slot.libre{background:var(--librebg);border-color:#bfe0c9}
-.slot.libre .hora{background:#d8eede;color:#1f6b3a;border-right:1px solid #bfe0c9}
-.slot.libre .lib{color:var(--libre)}
-/* ocupado */
-.slot.ocu{background:linear-gradient(120deg,var(--verde) 0%,var(--verde3) 100%);border-color:var(--verde)}
-.slot.ocu .hora{background:rgba(0,0,0,.18);color:var(--crema);border-right:1px solid rgba(255,255,255,.15)}
-.slot.ocu .cont .cli{color:#fff}
-/* pills de estado */
-.est{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:800;letter-spacing:.3px;white-space:nowrap;flex:0 0 auto}
+/* PLANILLA en columnas */
+.tablewrap{overflow-x:auto;border-radius:12px}
+table.pl{width:100%;border-collapse:separate;border-spacing:5px;min-width:340px}
+.pl thead th{background:var(--verde);color:var(--crema);font-family:var(--serif);font-size:13px;font-weight:700;
+ padding:9px 8px;border-radius:9px;text-align:center;letter-spacing:.3px;white-space:nowrap}
+.pl thead th.hcol{background:transparent;color:var(--gris);font-family:var(--sans);font-size:10px;
+ text-transform:uppercase;letter-spacing:.6px;width:96px}
+.pl td.hora{font-size:12.5px;font-weight:800;color:var(--verde);white-space:nowrap;text-align:right;
+ padding:0 10px 0 4px;width:96px;letter-spacing:.2px}
+.pl td.slot{border-radius:10px;padding:0;height:52px;box-shadow:var(--sombra);vertical-align:middle;text-align:center;position:relative}
+.pl td.slot .cli{font-weight:700;font-size:13px;color:#fff;padding:0 8px;line-height:1.15;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+/* libre (clickable = reservar) */
+.pl td.libre{background:var(--librebg);border:1px solid #bfe0c9}
+.pl td.libre a.reservar{display:flex;align-items:center;justify-content:center;width:100%;height:100%;
+ text-decoration:none;color:var(--libre);font-weight:700;font-size:12.5px;border-radius:10px;transition:background .15s}
+.pl td.libre a.reservar:hover{background:#dbefe1}
+.pl td.pasado{background:#f1f2f1;border:1px dashed #dfe3df}
+.pl td.pasado .pas{display:flex;align-items:center;justify-content:center;height:100%;color:#c3ccc5;font-size:16px;font-weight:700}
+.pl td.libre a.reservar .plus{opacity:.55;font-weight:800;margin-right:4px}
+/* ocupado por tipo de cliente */
+.pl td.ocu{border:1px solid transparent}
+.pl td.ocu a.det{display:block;width:100%;height:100%;text-decoration:none;color:inherit;border-radius:10px}
+.pl td.ocu a.det:hover{filter:brightness(1.12)}
+.pl td.ocu .cont{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:100%;padding:6px 4px;cursor:pointer}
+.pl td.ocu.t-fijo{background:linear-gradient(120deg,var(--verde) 0%,var(--verde3) 100%)}
+.pl td.ocu.t-even{background:linear-gradient(120deg,#8a3f1c 0%,#b5652f 100%)}
+.pl td.ocu.t-esc{background:linear-gradient(120deg,#234e77 0%,#2e6ba3 100%)}
+.pl td.ocu.t-tor{background:linear-gradient(120deg,#4a2f6b 0%,#6b4a8f 100%)}
+.est{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:800;letter-spacing:.3px;white-space:nowrap}
 .est.res{background:#f0ead6;color:#8a6a17} .est.sena{background:var(--dorado);color:#3a2a06} .est.pag{background:#cdeecd;color:#1c5c2e}
 
 #msg{text-align:center;color:var(--gris);padding:30px;font-size:14px}
@@ -75,7 +92,12 @@ body{background:#eef1ee;font-family:var(--sans);color:var(--tinta);-webkit-font-
 #load .t{color:var(--dorado2);font-family:var(--sans);letter-spacing:1px;font-size:13px}
 @keyframes pulse{0%,100%{opacity:.7;transform:scale(.97)}50%{opacity:1;transform:scale(1)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:520px){ .slot .hora{flex-basis:96px;font-size:13px} .slot .cont{padding:8px 12px} .top h1{font-size:16px} }
+@media(max-width:520px){
+ .pl thead th{font-size:12px;padding:7px 4px}
+ .pl thead th.hcol,.pl td.hora{width:66px;font-size:11px}
+ .pl td.slot .cli{font-size:11.5px}
+ .top h1{font-size:16px}
+}
 </style></head>
 <body>
 
@@ -90,7 +112,7 @@ body{background:#eef1ee;font-family:var(--sans);color:var(--tinta);-webkit-font-
 
 <div class="wrap">
  <div class="ctrl">
-  <div class="grp"><label>Cancha</label><select id="fCancha" onchange="render()"></select></div>
+  <div class="grp"><label>Deporte</label><select id="fTipo" onchange="render()"></select></div>
   <div class="grp"><label>Fecha</label><input type="date" id="fFecha" onchange="render()"></div>
   <div class="grp"><label>&nbsp;</label>
    <div class="nav">
@@ -104,13 +126,16 @@ body{background:#eef1ee;font-family:var(--sans);color:var(--tinta);-webkit-font-
  <div class="head">
   <div class="dia" id="dia"></div>
   <div class="leg">
-   <span class="cta" id="resumen"></span>
-   <span><i class="dot l"></i> Libre</span>
-   <span><i class="dot o"></i> Ocupado</span>
+   <span><i class="dot libre"></i> Libre</span>
+   <span><i class="dot t-fijo"></i> Fijo</span>
+   <span><i class="dot t-even"></i> Eventual</span>
+   <span><i class="dot t-esc"></i> Escuelita</span>
+   <span><i class="dot t-tor"></i> Torneo</span>
   </div>
  </div>
+ <div class="cta" id="resumen" style="margin:0 2px 10px;font-size:12px;color:var(--gris)"></div>
 
- <div class="grid" id="grid"></div>
+ <div class="tablewrap"><div id="grid"></div></div>
  <div id="msg" style="display:none"></div>
 
  <div class="foot"><b>EL PALMAR</b> · Fútbol 5 &amp; Pádel · Disponibilidad · <b>Danver</b></div>
@@ -118,6 +143,9 @@ body{background:#eef1ee;font-family:var(--sans);color:var(--tinta);-webkit-font-
 
 <script>
 const GAS="https://script.google.com/macros/s/AKfycbxYasftkvwQtwH1yp965tXuPn2TRlWg3EMJQ5HCggfAC0pukp_LdLSpbHTQp6lECN8w1Q/exec", CLAVE="elpalmar-panel-2026";
+const DL_BASE="https://www.appsheet.com/start/a22d88b0-cdcd-45d7-8e60-73cd9a886c97?platform=desktop#appName=ElPalmar-97095589&group=&table=Turnos&view=Turnos_Form&row=&Cancha=";
+const DL_DET="https://www.appsheet.com/start/a22d88b0-cdcd-45d7-8e60-73cd9a886c97?platform=desktop#appName=ElPalmar-97095589&group=&table=Turnos&view=Turnos_Detail&row=";
+const FORM_URL="https://www.appsheet.com/start/a22d88b0-cdcd-45d7-8e60-73cd9a886c97?platform=desktop#appName=ElPalmar-97095589&group=&table=Turnos&view=Turnos_Form";
 let DATA=null;
 const $=id=>document.getElementById(id);
 
@@ -133,65 +161,104 @@ function jsonp(params){return new Promise((res,rej)=>{
 async function cargar(){
  try{
   const d=await jsonp("action=grilla&clave="+encodeURIComponent(CLAVE));
-  if(!d||!d.ok){$("load").innerHTML='<div class="t" style="color:#b23b3b">No se pudo cargar ('+((d&&d.error)||"error")+')</div>';return;}
+  if(!d||!d.ok){$("load").innerHTML='<div class="t" style="color:#f0b3b3">No se pudo cargar ('+((d&&d.error)||"error")+')</div>';return;}
   DATA=d; $("upd").textContent="Act. "+d.meta.generado;
-  const s=$("fCancha"); s.innerHTML="";
-  d.canchas.forEach(c=>{const o=document.createElement("option");o.value=c.id;o.textContent=c.nombre+" ("+c.tipo+")";s.appendChild(o);});
+  initTipos();
   if(!$("fFecha").value) $("fFecha").value=iso(new Date());
   render(); $("load").style.display="none";
- }catch(e){ $("load").innerHTML='<div class="t" style="color:#b23b3b">Error de conexión</div>'; }
+ }catch(e){ $("load").innerHTML='<div class="t" style="color:#f0b3b3">Error de conexión</div>'; }
 }
 function recargar(){ $("load").style.display="flex"; cargar(); }
+
+function norm(s){return (s==null?"":s).normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase();}
+function esPad(c){return /PAD/.test(norm(c.tipo))||/PAD/.test(norm(c.nombre));}
+function esFut(c){return !esPad(c);}
+function initTipos(){
+ const s=$("fTipo"); s.innerHTML="";
+ const hayFut=DATA.canchas.some(esFut), hayPad=DATA.canchas.some(c=>!esFut(c));
+ if(hayFut){const o=document.createElement("option");o.value="FUTBOL";o.textContent="Fútbol";s.appendChild(o);}
+ if(hayPad){const o=document.createElement("option");o.value="PADEL";o.textContent="Pádel";s.appendChild(o);}
+}
 
 function pad(n){return(""+n).padStart(2,"0");}
 function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
 function min(h){const m=(h||"").match(/(\d{1,2}):(\d{2})/);return m?(+m[1])*60+(+m[2]):null;}
 function hhmm(m){return pad(Math.floor(m/60)%24)+":"+pad(m%60);}
+function hhmmss(m){return pad(Math.floor(m/60)%24)+":"+pad(m%60)+":00";}
 function mover(n){const v=$("fFecha").value; if(!v)return; const d=new Date(v+"T00:00:00"); d.setDate(d.getDate()+n); $("fFecha").value=iso(d); render();}
 function hoy(){ $("fFecha").value=iso(new Date()); render(); }
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 const DIAS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
 const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+function tipoCls(t){t=(t||"").toUpperCase();return t==="EVENTUAL"?"t-even":t==="ESCUELITA"?"t-esc":t==="TORNEO"?"t-tor":"t-fijo";}
+function estPill(e){var m={"RESERVADO":"res","CON SEÑA":"sena","PAGADO":"pag"};if(!m[e])return"";return '<span class="est '+m[e]+'">'+e+'</span>';}
+function linkReserva(cid,fecha,s){return DL_BASE+encodeURIComponent(cid)+"&Fecha="+fecha+"&Hora_Inicio="+hhmmss(s);}
+function linkDetalle(id){return DL_DET+encodeURIComponent(id);}
+function reservar(cancha,fecha,hora,ev){
+ if(ev){ ev.preventDefault(); var el=ev.currentTarget; if(el){ el.innerHTML='Abriendo…'; } }
+ var go=function(){ window.location.href=FORM_URL; };
+ jsonp("action=setctx&clave="+encodeURIComponent(CLAVE)+"&cancha="+encodeURIComponent(cancha)+"&fecha="+encodeURIComponent(fecha)+"&hora="+encodeURIComponent(hora)).then(go).catch(go);
+ return false;
+}
 
 function render(){
  if(!DATA)return;
- const cid=$("fCancha").value, fecha=$("fFecha").value;
- const cancha=DATA.canchas.find(c=>c.id===cid);
- if(!cancha||!fecha){return;}
+ const tipo=$("fTipo").value, fecha=$("fFecha").value;
+ if(!fecha)return;
+ const canchas=DATA.canchas.filter(c=> tipo==="PADEL" ? !esFut(c) : esFut(c))
+   .sort((a,b)=> (a.nombre||"")<(b.nombre||"")?-1:1);
 
- // encabezado del día
  const d=new Date(fecha+"T00:00:00");
  $("dia").textContent=DIAS[d.getDay()]+" "+d.getDate()+" "+MESES[d.getMonth()];
 
- // horario del complejo (maneja cierre a medianoche = 24:00)
- let ap=min(DATA.config.apertura); let ci=min(DATA.config.cierre);
+ let ap=min(DATA.config.apertura), ci=min(DATA.config.cierre);
  if(ap===null)ap=480; if(ci===null||ci<=ap)ci=1440;
- const paso=cancha.inc||60;
+ const paso=(canchas[0]&&canchas[0].inc)||(tipo==="PADEL"?30:60);
+ const slots=[]; for(let s=ap; s+paso<=ci; s+=paso) slots.push(s);
 
- // turnos ocupados de esa cancha ese día
- const ocup=DATA.turnos.filter(t=>t.cancha===cid && t.f===fecha && !t.canc)
-   .map(t=>({a:min(t.hi),b:min(t.hf),cli:t.cli,estado:t.estado}));
+ // ocupación por cancha
+ const occ={};
+ canchas.forEach(c=>{
+  const arr=new Array(slots.length).fill(null);
+  DATA.turnos.filter(t=>t.cancha===c.id && t.f===fecha && !t.canc).forEach(t=>{
+   const a=min(t.hi), b=min(t.hf); if(a===null||b===null)return;
+   let si=-1, ei=-1;
+   for(let i=0;i<slots.length;i++){const s=slots[i], e=s+paso; if(s<b && e>a){ if(si<0)si=i; ei=i; }}
+   if(si<0)return;
+   arr[si]={id:t.id, cli:t.cli, estado:t.estado, tipo:t.tipo, span:ei-si+1};
+   for(let i=si+1;i<=ei;i++) arr[i]="cont";
+  });
+  occ[c.id]=arr;
+ });
 
- const grid=$("grid"); grid.innerHTML=""; $("msg").style.display="none";
+ const esHoy=(fecha===iso(new Date())); const _n=new Date(); const ahoraMin=_n.getHours()*60+_n.getMinutes();
  let libres=0, ocupados=0;
- for(let s=ap; s+paso<=ci; s+=paso){
-  const e=s+paso;
-  const t=ocup.find(o=>o.a!==null && o.b!==null && o.a<e && o.b>s);
-  const div=document.createElement("div");
-  const rango=hhmm(s)+' – '+hhmm(e);
-  if(t){ocupados++;
-   div.className="slot ocu";
-   div.innerHTML='<div class="hora">'+rango+'</div><div class="cont"><span class="cli">'+(t.cli||"Ocupado")+'</span>'+estPill(t.estado)+'</div>';
-  }else{libres++;
-   div.className="slot libre";
-   div.innerHTML='<div class="hora">'+rango+'</div><div class="cont"><span class="lib">✓ Libre</span></div>';
-  }
-  grid.appendChild(div);
+ let h='<table class="pl"><thead><tr><th class="hcol">Hora</th>';
+ canchas.forEach(c=>{ h+='<th>'+esc(c.nombre)+'</th>'; });
+ h+='</tr></thead><tbody>';
+ for(let i=0;i<slots.length;i++){
+  const s=slots[i], e=s+paso;
+  h+='<tr><td class="hora">'+hhmm(s)+'<br>'+hhmm(e)+'</td>';
+  canchas.forEach(c=>{
+   const cell=occ[c.id][i];
+   if(cell==="cont") return;               // cubierto por rowspan
+   if(cell){ ocupados++;
+    h+='<td class="slot ocu '+tipoCls(cell.tipo)+'" rowspan="'+cell.span+'"><a class="det" href="'+linkDetalle(cell.id)+'" target="_blank" rel="noopener"><div class="cont"><span class="cli">'+esc(cell.cli||"Ocupado")+'</span>'+estPill(cell.estado)+'</div></a></td>';
+   }else if(esHoy && s < ahoraMin){ // franja que ya pasó hoy
+    h+='<td class="slot pasado"><span class="pas">—</span></td>';
+   }else{ libres++;
+    h+='<td class="slot libre"><a class="reservar" href="'+FORM_URL+'" onclick="return reservar(\''+esc(c.id)+'\',\''+fecha+'\',\''+hhmmss(s)+'\',event)"><span class="plus">+</span>Reservar</a></td>';
+   }
+  });
+  h+='</tr>';
  }
- $("resumen").innerHTML='<b>'+libres+'</b> libres · <b>'+ocupados+'</b> ocupados &nbsp;';
- if(libres+ocupados===0){grid.innerHTML="";$("msg").style.display="block";$("msg").textContent="No hay horarios configurados para esta cancha.";}
+ h+='</tbody></table>';
+
+ if(!canchas.length){ $("grid").innerHTML=""; $("msg").style.display="block"; $("msg").textContent="No hay canchas de este tipo."; }
+ else{ $("grid").innerHTML=h; $("msg").style.display="none"; }
+ $("resumen").innerHTML='<b>'+libres+'</b> espacios libres · <b>'+ocupados+'</b> ocupados';
 }
-function estPill(e){var m={"RESERVADO":"res","CON SEÑA":"sena","PAGADO":"pag"};if(!m[e])return"";return '<span class="est '+m[e]+'">'+e+'</span>';}
 
 cargar();
 </script>
